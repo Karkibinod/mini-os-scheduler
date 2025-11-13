@@ -9,6 +9,7 @@ description = "A comprehensive CPU scheduling simulator implementing FCFS, SJF, 
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "MIT"}
+license-files = ["LICENSE"]
 authors = [
     {name = "Binod Karki", email = "karkibinod367@gmail.com"}
 ]
