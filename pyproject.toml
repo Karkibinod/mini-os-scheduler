@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mini-os-scheduler"
+version = "0.1.0"
+description = "A comprehensive CPU scheduling simulator implementing FCFS, SJF, Priority, and Round Robin algorithms"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "Binod Karki", email = "karkibinod367@gmail.com"}
+]
+maintainers = [
+    {name = "Binod Karki", email = "karkibinod367@gmail.com"}
+]
+keywords = [
+    "cpu",
+    "scheduler",
+    "scheduling",
+    "operating-systems",
+    "fcfs",
+    "sjf",
+    "round-robin",
+    "priority-scheduling",
+    "simulator",
+    "os",
+    "process-scheduling"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "Topic :: Education",
+    "Topic :: System :: Operating System",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.optional-dependencies]
+web = [
+    "flask>=2.0.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Karkibinod/mini-os-scheduler"
+Documentation = "https://github.com/Karkibinod/mini-os-scheduler#readme"
+Repository = "https://github.com/Karkibinod/mini-os-scheduler"
+Issues = "https://github.com/Karkibinod/mini-os-scheduler/issues"
+Changelog = "https://github.com/Karkibinod/mini-os-scheduler/blob/main/CHANGELOG.md"
+
+[project.scripts]
+mini-scheduler = "mini_os_scheduler.main:main"
+
+[tool.setuptools]
+packages = ["mini_os_scheduler", "mini_os_scheduler.web"]
+
+[tool.setuptools.package-data]
+mini_os_scheduler = [
+    "web/templates/*.html",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+

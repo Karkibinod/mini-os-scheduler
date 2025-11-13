@@ -1,0 +1,9 @@
+include README.md
+include LICENSE
+include pyproject.toml
+include requirements.txt
+recursive-include mini_os_scheduler/web/templates *.html
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+

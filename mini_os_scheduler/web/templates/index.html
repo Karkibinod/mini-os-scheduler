@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Scheduler Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .process-input {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+        
+        .process-list {
+            margin-top: 15px;
+        }
+        
+        .process-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-primary {
+            background: #28a745;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        
+        .btn-primary:hover {
+            background: #218838;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .algorithm-result {
+            margin-bottom: 30px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .algorithm-header {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            font-size: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖥️ CPU Scheduler Simulator</h1>
+        <p class="subtitle">Compare different CPU scheduling algorithms in real-time</p>
+        
+        <div class="input-section">
+            <div class="form-group">
+                <label>Select Algorithm:</label>
+                <select id="algorithm">
+                    <option value="all">All Algorithms (Comparison)</option>
+                    <option value="fcfs">First-Come, First-Serve (FCFS)</option>
+                    <option value="sjf">Shortest Job First (SJF)</option>
+                    <option value="priority">Priority Scheduling</option>
+                    <option value="rr">Round Robin</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="quantum-group" style="display: none;">
+                <label>Time Quantum (for Round Robin):</label>
+                <input type="number" id="time-quantum" value="2" min="1">
+            </div>
+            
+            <div class="form-group">
+                <label>Add Process:</label>
+                <div class="process-input">
+                    <input type="number" id="pid" placeholder="PID" min="1">
+                    <input type="number" id="arrival" placeholder="Arrival Time" min="0">
+                    <input type="number" id="burst" placeholder="Burst Time" min="1">
+                    <input type="number" id="priority" placeholder="Priority" min="0" value="0">
+                    <button onclick="addProcess()">Add</button>
+                </div>
+            </div>
+            
+            <div class="process-list" id="process-list"></div>
+            
+            <button class="btn-primary" onclick="runSimulation()">Run Simulation</button>
+        </div>
+        
+        <div id="error-message"></div>
+        <div id="results-section" class="results-section"></div>
+    </div>
+    
+    <script>
+        let processes = [];
+        
+        // Show/hide quantum input based on algorithm
+        document.getElementById('algorithm').addEventListener('change', function() {
+            const quantumGroup = document.getElementById('quantum-group');
+            if (this.value === 'rr' || this.value === 'all') {
+                quantumGroup.style.display = 'block';
+            } else {
+                quantumGroup.style.display = 'none';
+            }
+        });
+        
+        function addProcess() {
+            const pid = parseInt(document.getElementById('pid').value);
+            const arrival = parseInt(document.getElementById('arrival').value);
+            const burst = parseInt(document.getElementById('burst').value);
+            const priority = parseInt(document.getElementById('priority').value) || 0;
+            
+            if (!pid || !arrival || !burst) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (processes.find(p => p.pid === pid)) {
+                alert('Process with this PID already exists');
+                return;
+            }
+            
+            processes.push({pid, arrival_time: arrival, burst_time: burst, priority});
+            updateProcessList();
+            
+            // Clear inputs
+            document.getElementById('pid').value = '';
+            document.getElementById('arrival').value = '';
+            document.getElementById('burst').value = '';
+            document.getElementById('priority').value = '0';
+        }
+        
+        function removeProcess(pid) {
+            processes = processes.filter(p => p.pid !== pid);
+            updateProcessList();
+        }
+        
+        function updateProcessList() {
+            const list = document.getElementById('process-list');
+            if (processes.length === 0) {
+                list.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No processes added yet</p>';
+                return;
+            }
+            
+            list.innerHTML = processes.map(p => `
+                <div class="process-item">
+                    <div><strong>PID:</strong> ${p.pid}</div>
+                    <div><strong>Arrival:</strong> ${p.arrival_time}</div>
+                    <div><strong>Burst:</strong> ${p.burst_time}</div>
+                    <div><strong>Priority:</strong> ${p.priority}</div>
+                    <button class="danger" onclick="removeProcess(${p.pid})">Remove</button>
+                </div>
+            `).join('');
+        }
+        
+        async function runSimulation() {
+            if (processes.length === 0) {
+                showError('Please add at least one process');
+                return;
+            }
+            
+            const algorithm = document.getElementById('algorithm').value;
+            const timeQuantum = parseInt(document.getElementById('time-quantum').value) || 2;
+            
+            document.getElementById('error-message').innerHTML = '';
+            document.getElementById('results-section').innerHTML = '<div class="loading">Running simulation...</div>';
+            
+            try {
+                const response = await fetch('/api/schedule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        processes: processes,
+                        algorithm: algorithm,
+                        time_quantum: timeQuantum
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Simulation failed');
+                }
+                
+                displayResults(data);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        function displayResults(data) {
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.innerHTML = '';
+            
+            for (const [name, result] of Object.entries(data)) {
+                const algorithmDiv = document.createElement('div');
+                algorithmDiv.className = 'algorithm-result';
+                
+                let tableHTML = `
+                    <div class="algorithm-header">${result.algorithm}</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PID</th>
+                                <th>Arrival</th>
+                                <th>Burst</th>
+                                <th>Priority</th>
+                                <th>Start</th>
+                                <th>Finish</th>
+                                <th>Waiting</th>
+                                <th>Turnaround</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                result.results.forEach(r => {
+                    tableHTML += `
+                        <tr>
+                            <td>${r.pid}</td>
+                            <td>${r.arrival_time}</td>
+                            <td>${r.burst_time}</td>
+                            <td>${r.priority}</td>
+                            <td>${r.start_time}</td>
+                            <td>${r.finish_time}</td>
+                            <td>${r.waiting_time}</td>
+                            <td>${r.turnaround_time}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                        </tbody>
+                    </table>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${result.avg_waiting_time}</div>
+                            <div class="stat-label">Avg Waiting Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${result.avg_turnaround_time}</div>
+                            <div class="stat-label">Avg Turnaround Time</div>
+                        </div>
+                    </div>
+                `;
+                
+                algorithmDiv.innerHTML = tableHTML;
+                resultsSection.appendChild(algorithmDiv);
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('error-message').innerHTML = 
+                `<div class="error">Error: ${message}</div>`;
+        }
+        
+        // Initialize
+        updateProcessList();
+    </script>
+</body>
+</html>
