@@ -42,3 +42,9 @@ Thumbs.db
 # Project specific
 *.log
 
+# Build artifacts
+dist/
+build/
+*.egg-info/
+.eggs/
+
