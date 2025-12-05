@@ -4,7 +4,19 @@
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A comprehensive CPU scheduling simulator implemented in Python that demonstrates core operating systems concepts. This package simulates and compares multiple CPU scheduling algorithms with detailed metrics and analysis.
+> A comprehensive, educational CPU scheduling simulator demonstrating fundamental operating systems concepts through clean, well-documented Python code.
+
+**Mini OS CPU Scheduler** is a feature-rich simulation tool that implements and compares four classical CPU scheduling algorithms. Perfect for students learning operating systems, educators teaching scheduling concepts, and developers exploring systems programming.
+
+## 🌟 Why This Project?
+
+- **Educational Focus**: Clear implementations with extensive documentation and comments
+- **Production Quality**: Full type hints, comprehensive tests, and clean architecture
+- **Flexible Interface**: Use as a CLI tool, Python library, or interactive web dashboard
+- **Real Metrics**: Calculates waiting time, turnaround time, and other performance metrics
+- **Easy to Use**: Simple installation via pip, works on all platforms
+
+Whether you're studying for an OS exam, teaching a class, or building your portfolio, this project demonstrates both operating systems concepts and software engineering best practices.
 
 ## 🎯 Features
 
@@ -189,21 +201,140 @@ mini_os_scheduler/
 - No external dependencies (core package)
 - Flask 2.0+ (for web dashboard, optional)
 
+## 🎓 Learning Resources
+
+Want to learn how this project was built? Check out [LEARN.md](LEARN.md) for:
+- Step-by-step development process
+- Design decisions and trade-offs
+- Implementation details for each algorithm
+- Testing strategies
+- Packaging and distribution guide
+
+## 📊 Performance Comparison
+
+The simulator allows you to compare algorithms side-by-side. Here's what you'll discover:
+
+| Algorithm | Best For | Drawback |
+|-----------|----------|----------|
+| **FCFS** | Simple, predictable systems | Can cause convoy effect |
+| **SJF** | Minimizing average waiting time | Requires knowing burst times |
+| **Priority** | Systems with process priorities | Can cause starvation |
+| **Round Robin** | Time-sharing systems | Overhead from context switching |
+
+## 🛠️ Advanced Usage
+
+### Custom Process Generation
+
+```python
+from mini_os_scheduler import Process
+import random
+
+# Generate random process set
+processes = [
+    Process(
+        pid=i,
+        arrival_time=random.randint(0, 10),
+        burst_time=random.randint(1, 20),
+        priority=random.randint(1, 5)
+    )
+    for i in range(1, 11)
+]
+```
+
+### Extract Specific Metrics
+
+```python
+from mini_os_scheduler import run_fcfs
+
+result = run_fcfs(processes)
+
+# Get process with longest waiting time
+max_wait = max(result.results, key=lambda r: r.waiting_time)
+print(f"Process {max_wait.pid} waited {max_wait.waiting_time} units")
+
+# Calculate CPU utilization
+total_burst = sum(p.burst_time for p in processes)
+total_time = max(r.finish_time for r in result.results)
+utilization = (total_burst / total_time) * 100
+print(f"CPU Utilization: {utilization:.2f}%")
+```
+
+## 🔍 Algorithm Details
+
+### FCFS (First-Come, First-Serve)
+- **Type**: Non-preemptive
+- **Selection**: Process with earliest arrival time
+- **Use Case**: Batch systems, simple schedulers
+- **Time Complexity**: O(n log n) for sorting
+
+### SJF (Shortest Job First)
+- **Type**: Non-preemptive
+- **Selection**: Process with shortest burst time
+- **Use Case**: Minimizing average waiting time
+- **Time Complexity**: O(n²) worst case
+
+### Priority Scheduling
+- **Type**: Non-preemptive
+- **Selection**: Process with highest priority (lowest number)
+- **Use Case**: Real-time systems, critical processes
+- **Time Complexity**: O(n²) worst case
+
+### Round Robin
+- **Type**: Preemptive
+- **Selection**: Circular queue with time quantum
+- **Use Case**: Time-sharing systems, interactive applications
+- **Time Complexity**: O(n × (total_burst / quantum))
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+Copyright (c) 2024 Binod Karki
+
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Here's how you can help:
 
+1. **Report Bugs**: Open an issue describing the bug and how to reproduce it
+2. **Suggest Features**: Share ideas for new algorithms or features
+3. **Submit PRs**: Fork, create a feature branch, and submit a pull request
+4. **Improve Docs**: Help make documentation clearer and more comprehensive
+5. **Write Tests**: Add test cases to improve coverage
+
+Please ensure:
+- Code follows existing style (type hints, docstrings)
+- Tests pass (`pytest tests/ -v`)
+- New features include tests and documentation
+
+## 🙏 Acknowledgments
+
+- Inspired by classical OS textbooks (Silberschatz, Tanenbaum)
+- Built with modern Python best practices
+- Thanks to the open-source community
+
+## 📧 Contact
+
+**Binod Karki**
+- GitHub: [@Karkibinod](https://github.com/Karkibinod)
+- Email: karkibinod367@gmail.com
 
 ## 🔗 Links
 
-- **PyPI**: https://pypi.org/project/mini-os-scheduler/
-- **GitHub**: https://github.com/Karkibinod/mini-os-scheduler
-- **Issues**: https://github.com/Karkibinod/mini-os-scheduler/issues
+- **PyPI Package**: https://pypi.org/project/mini-os-scheduler/
+- **Source Code**: https://github.com/Karkibinod/mini-os-scheduler
+- **Issue Tracker**: https://github.com/Karkibinod/mini-os-scheduler/issues
+- **Documentation**: See [LEARN.md](LEARN.md) for detailed guide
+
+## ⭐ Show Your Support
+
+If you find this project helpful:
+- Star the repository on GitHub
+- Share it with others learning OS concepts
+- Contribute improvements
+- Use it in your teaching or projects
 
 ---
 
-**A CPU scheduling simulator demonstrating systems programming concepts and software engineering best practices.**
+**A CPU scheduling simulator demonstrating operating systems concepts and software engineering best practices.**
+
+*Made with ❤️ for students, educators, and systems programming enthusiasts.*
